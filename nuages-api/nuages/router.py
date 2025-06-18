@@ -71,15 +71,15 @@ def stop_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_servic
 
 
 @router.put(
-    "/{nuage_uuid}/restart",
+    "/{nuage_uuid}/reboot",
     response_model=NuageResponse,
     status_code=status.HTTP_200_OK,
-    summary="Restart a nuage",
-    description="Restart a specific nuage by its UUID.",
+    summary="Reboot a nuage",
+    description="Reboot a specific nuage by its UUID.",
 )
-def restart_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service)):
-    """Restart a specific nuage by its UUID."""
-    return service.restart_nuage(nuage_uuid)
+def reboot_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service)):
+    """Reboot a specific nuage by its UUID."""
+    return service.reboot_nuage(nuage_uuid)
 
 
 @router.get(

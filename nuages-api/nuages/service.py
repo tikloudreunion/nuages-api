@@ -160,7 +160,15 @@ class NuageService:
             )
         return nuage
 
-    def restart_nuage(self, nuage_uuid: str) -> Nuage:
-        """Restart a nuage."""
-        self.stop_nuage(nuage_uuid)
-        return self.start_nuage(nuage_uuid)
+    def reboot_nuage(self, nuage_uuid: str) -> Nuage:
+        """Reboot a nuage."""
+        nuage = self.get_nuage(nuage_uuid)
+        try:
+            self.proxmox_session.nodes(nuage.node_name).lxc(nuage.vmid).status.reboot.create()  # type: ignore
+        except Exception as execption:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=f"Failed to reboot LXC in Proxmox: {str(execption)}",
+            )
+        return nuage
+
