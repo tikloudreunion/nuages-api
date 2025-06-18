@@ -105,3 +105,14 @@ def get_nuage_status(
 def delete_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service)):
     """Delete a specific nuage by its UUID."""
     service.delete_nuage(nuage_uuid)
+
+@router.put(
+    "/{nuage_uuid}/shutdown",
+    response_model=NuageResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Shutdown a nuage",
+    description="Shutdown a specific nuage by its UUID.",
+)
+def shutdown_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service)):
+    """Shutdown a specific nuage by its UUID."""
+    return service.shutdown_nuage(nuage_uuid)
