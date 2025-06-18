@@ -136,12 +136,20 @@ class NuageService:
         self.repository.delete(nuage)
 
     def start_nuage(self, nuage_uuid: str) -> Nuage:
-        """Activate a nuage."""
+        """Start a nuage."""
         pass
 
     def stop_nuage(self, nuage_uuid: str) -> Nuage:
-        """Deactivate a nuage."""
-        pass
+        """Stop a nuage."""
+        nuage = self.get_nuage(nuage_uuid)
+        try:
+            self.proxmox_session.nodes(nuage.node_name).lxc(nuage.vmid).status.stop.create()  # type: ignore
+        except Exception as execption:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=f"Failed to stop LXC in Proxmox: {str(execption)}",
+            )
+        return nuage
 
     def restart_nuage(self, nuage_uuid: str) -> Nuage:
         """Restart a nuage."""
