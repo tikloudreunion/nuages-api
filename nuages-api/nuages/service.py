@@ -146,7 +146,15 @@ class NuageService:
 
     def start_nuage(self, nuage_uuid: str) -> Nuage:
         """Start a nuage."""
-        pass
+        nuage = self.get_nuage(nuage_uuid)
+        try:
+            self.proxmox_session.nodes(nuage.node_name).lxc(nuage.vmid).status.start.create()  # type: ignore
+        except Exception as execption:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=f"Failed to start LXC in Proxmox: {str(execption)}",
+            )
+        return nuage
 
     def stop_nuage(self, nuage_uuid: str) -> Nuage:
         """Stop a nuage."""
