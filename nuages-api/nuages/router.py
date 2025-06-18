@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import routing, status, Depends
 
-from .schemas import NuageResponse, CreateNuageRequest
+from .schemas import NuageResponse, CreateNuageRequest, NuageStatus
 from .service import NuageService
 from .utils import get_nuage_service
 
@@ -45,6 +45,55 @@ def list_nuages(service: NuageService = Depends(get_nuage_service)):
 def get_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service)):
     """Get a specific nuage by its UUID."""
     return service.get_nuage(nuage_uuid)
+
+@router.put(
+    "/{nuage_uuid}/start",
+    response_model=NuageResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Activate a nuage",
+    description="Activate a specific nuage by its UUID.",
+)
+def start_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service)):
+    """Activate a specific nuage by its UUID."""
+    return service.start_nuage(nuage_uuid)
+
+
+@router.put(
+    "/{nuage_uuid}/stop",
+    response_model=NuageResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Stop a nuage",
+    description="Stop a specific nuage by its UUID.",
+)
+def stop_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service)):
+    """Stop a specific nuage by its UUID."""
+    return service.stop_nuage(nuage_uuid)
+
+
+@router.put(
+    "/{nuage_uuid}/restart",
+    response_model=NuageResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Restart a nuage",
+    description="Restart a specific nuage by its UUID.",
+)
+def restart_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service)):
+    """Restart a specific nuage by its UUID."""
+    return service.restart_nuage(nuage_uuid)
+
+
+@router.get(
+    "/{nuage_uuid}/status",
+    response_model=NuageStatus,
+    status_code=status.HTTP_200_OK,
+    summary="Get nuage status",
+    description="Retrieve the status of a specific nuage by its UUID.",
+)
+def get_nuage_status(
+    nuage_uuid: str, service: NuageService = Depends(get_nuage_service)
+):
+    """Get the status of a specific nuage by its UUID."""
+    return service.get_nuage_status(nuage_uuid)
 
 
 @router.delete(

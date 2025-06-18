@@ -3,7 +3,6 @@ from time import time
 
 from sqlmodel import SQLModel, Field
 
-
 class Nuage(SQLModel, table=True):
     """Database model for Nuage resources."""
 
