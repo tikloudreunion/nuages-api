@@ -41,3 +41,15 @@ To run the development server, use the following command:
 ```bash
 fastapi dev --reload nuages-api
 ```
+
+## API Architecture
+
+The Nuages API is built using FastAPI, a modern web framework for building APIs with Python. It follows the RESTful architecture and uses JSON for data interchange.
+
+We use Pydantic for data validation and serialization, ensuring that the API is robust and easy to use. The API endpoints are organized into routers, each handling a specific set of resources or operations.
+
+## Documentation
+
+The API documentation is automatically generated using FastAPI's built-in support for OpenAPI. You can access the interactive API documentation at:
+
+[http://localhost:8000/docs](http://localhost:8000/docs)
