@@ -4,11 +4,7 @@ import random
 from fastapi import HTTPException, status
 
 from .models import Nuage
-<<<<<<< HEAD
-from .schemas import CreateNuage, UpdateNuage, NuageStatus
-=======
-from .schemas import CreateNuageRequest, CreateNuage
->>>>>>> main
+from .schemas import CreateNuageRequest, CreateNuage, NuageStatus
 from .repository import NuageRepository
 from ..proxmox import ProxmoxSession
 
@@ -133,6 +129,19 @@ class NuageService:
     def delete_nuage(self, nuage_uuid: str) -> None:
         """Delete a nuage."""
         nuage = self.get_nuage(nuage_uuid)
+
+        try:
+            self.proxmox_session.nodes(nuage.node_name).lxc(nuage.vmid).delete(
+                destroy_unreferenced_disks=1,  # Delete unreferenced disks
+                force=1  # Force deletion without confirmation
+                purge=1  # Purge the LXC
+            )  # type: ignore
+        except Exception as execption:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=f"Failed to delete LXC in Proxmox: {str(execption)}",
+            )
+
         self.repository.delete(nuage)
 
     def start_nuage(self, nuage_uuid: str) -> Nuage:
