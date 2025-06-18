@@ -6,25 +6,23 @@ class NuageBase(BaseModel):
 
     name: str = Field(..., min_length=1, max_length=255)
     template: str = Field(..., min_length=1, max_length=255)
-    core: int = Field(default=1, ge=1, le=64)
+    cores: int = Field(default=1, ge=1, le=64)
     memory: int = Field(default=512, ge=256, le=32768)
     swap: int = Field(default=512, ge=0, le=16384)
     disk: int = Field(default=10240, ge=1024, le=1048576)
 
 
-class CreateNuage(NuageBase):
+class CreateNuageRequest(NuageBase):
     """Schema for creating a new nuage."""
 
     pass
 
 
-class UpdateNuage(BaseModel):
-    """Schema for updating an existing nuage."""
+class CreateNuage(NuageBase):
+    """Schema for creating a new nuage."""
 
-    core: int = Field(default=1, ge=1, le=64)
-    memory: int = Field(default=512, ge=256, le=32768)
-    swap: int = Field(default=512, ge=0, le=16384)
-    disk: int = Field(default=10240, ge=1024, le=1048576)
+    node_name: str
+    vmid: int
 
 
 class NuageResponse(NuageBase):

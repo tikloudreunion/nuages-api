@@ -2,11 +2,12 @@ from typing import List
 
 from fastapi import routing, status, Depends
 
-from .schemas import NuageResponse, CreateNuage, UpdateNuage, NuageStatus
+from .schemas import NuageResponse, CreateNuageRequest, NuageStatus
 from .service import NuageService
 from .utils import get_nuage_service
 
 router = routing.APIRouter()
+
 
 @router.post(
     "",
@@ -16,7 +17,7 @@ router = routing.APIRouter()
     description="Create a new nuage with the specified configuration.",
 )
 def create_nuage(
-    nuage_data: CreateNuage, service: NuageService = Depends(get_nuage_service)
+    nuage_data: CreateNuageRequest, service: NuageService = Depends(get_nuage_service)
 ):
     """Create a new nuage."""
     return service.create_nuage(nuage_data)
@@ -45,22 +46,6 @@ def get_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service
     """Get a specific nuage by its UUID."""
     return service.get_nuage(nuage_uuid)
 
-
-@router.put(
-    "/{nuage_uuid}",
-    response_model=NuageResponse,
-    status_code=status.HTTP_200_OK,
-    summary="Update a nuage",
-    description="Update an existing nuage's configuration.",
-)
-def update_nuage(
-    nuage_uuid: str,
-    update_data: UpdateNuage,
-    service: NuageService = Depends(get_nuage_service),
-):
-    """Update an existing nuage."""
-    return service.update_nuage(nuage_uuid, update_data)
-
 @router.put(
     "/{nuage_uuid}/start",
     response_model=NuageResponse,
@@ -71,6 +56,7 @@ def update_nuage(
 def start_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service)):
     """Activate a specific nuage by its UUID."""
     return service.start_nuage(nuage_uuid)
+
 
 @router.put(
     "/{nuage_uuid}/stop",
@@ -83,6 +69,7 @@ def stop_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_servic
     """Stop a specific nuage by its UUID."""
     return service.stop_nuage(nuage_uuid)
 
+
 @router.put(
     "/{nuage_uuid}/restart",
     response_model=NuageResponse,
@@ -94,6 +81,7 @@ def restart_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_ser
     """Restart a specific nuage by its UUID."""
     return service.restart_nuage(nuage_uuid)
 
+
 @router.get(
     "/{nuage_uuid}/status",
     response_model=NuageStatus,
@@ -101,9 +89,12 @@ def restart_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_ser
     summary="Get nuage status",
     description="Retrieve the status of a specific nuage by its UUID.",
 )
-def get_nuage_status(nuage_uuid: str, service: NuageService = Depends(get_nuage_service)):
+def get_nuage_status(
+    nuage_uuid: str, service: NuageService = Depends(get_nuage_service)
+):
     """Get the status of a specific nuage by its UUID."""
     return service.get_nuage_status(nuage_uuid)
+
 
 @router.delete(
     "/{nuage_uuid}",

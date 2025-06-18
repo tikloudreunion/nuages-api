@@ -1,6 +1,10 @@
+from dotenv import load_dotenv
+
 from .application import Application
 from .nuages.router import router as nuages_router
 from fastapi.middleware.cors import CORSMiddleware
+
+load_dotenv()
 
 application = Application()
 
