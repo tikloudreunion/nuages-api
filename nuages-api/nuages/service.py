@@ -58,6 +58,7 @@ class NuageService:
                 storage="local-lvm",
                 start=1,  # Automatically start the LXC after creation
                 rootfs=f"local-lvm:{nuage_data.disk}",
+                password="rootroot",
             )
         except Exception as execption:
             raise HTTPException(
@@ -94,44 +95,34 @@ class NuageService:
 
     def get_nuage_status(self, nuage_uuid: str) -> NuageStatus:
         """Get the status of a nuage."""
-        # nuage = self.repository.get_by_uuid(nuage_uuid)
-        # if not nuage:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_404_NOT_FOUND,
-        #         detail=f"Nuage with UUID '{nuage_uuid}' not found.",
-        #     )
-        # pass
 
-        ### !  Placeholder logic for status retrieval
-        status1 = NuageStatus(
-            status="running",
-            message="Nuage is running.",
-            cpu_usage=50.0,
-            memory_usage=30.0,
-            disk_usage=20.0,
-        )
-        status2 = NuageStatus(
-            status="stopped",
-            message="Nuage is stopped.",
-            cpu_usage=0.0,
-            memory_usage=0.0,
-            disk_usage=0.0,
-        )
-        status3 = NuageStatus(
-            status="error",
-            message="Nuage encountered an error.",
-            cpu_usage=0.0,
-            memory_usage=0.0,
-            disk_usage=0.0,
-        )
-        return [status1, status2, status3][int(nuage_uuid)]
+        nuage = self.get_nuage(nuage_uuid)
+
+        try:
+            nuage_status = self.proxmox_session.nodes(nuage.node_name).lxc(nuage.vmid).status.current.get()  # type: ignore
+            print(nuage_status)  # type: ignore
+
+            return NuageStatus(
+                status=nuage_status["status"],  # type: ignore
+                message="No additional message available.",  # type: ignore
+                cpu_usage=abs(nuage_status.get("cpu")),  # type: ignore
+                memory_usage=abs(nuage_status.get("mem") * 100.0 / nuage_status.get("maxmem")),  # type: ignore
+                disk_usage=abs(nuage_status.get("disk") * 100.0 / nuage_status.get("maxdisk")),  # type: ignore
+                swap_usage=abs(nuage_status.get("swap") * 100.0 / nuage_status.get("maxswap")),  # type: ignore
+            )
+
+        except Exception as execption:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=f"Failed to retrieve LXC status from Proxmox: {str(execption)}",
+            )
 
     def delete_nuage(self, nuage_uuid: str) -> None:
         """Delete a nuage."""
         nuage = self.get_nuage(nuage_uuid)
 
         try:
-            self.proxmox_session.nodes(nuage.node_name).lxc(nuage.vmid).delete(
+            self.proxmox_session.nodes(nuage.node_name).lxc(nuage.vmid).delete(  # type: ignore
                 destroy_unreferenced_disks=1,  # Delete unreferenced disks
                 force=1,  # Force deletion without confirmation
                 purge=1,  # Purge the LXC
@@ -146,7 +137,15 @@ class NuageService:
 
     def start_nuage(self, nuage_uuid: str) -> Nuage:
         """Start a nuage."""
-        pass
+        nuage = self.get_nuage(nuage_uuid)
+        try:
+            self.proxmox_session.nodes(nuage.node_name).lxc(nuage.vmid).status.start.create()  # type: ignore
+        except Exception as execption:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=f"Failed to start LXC in Proxmox: {str(execption)}",
+            )
+        return nuage
 
     def stop_nuage(self, nuage_uuid: str) -> Nuage:
         """Stop a nuage."""
