@@ -57,3 +57,8 @@ class NuageStatus(BaseModel):
         le=100.0,
         description="Current disk usage percentage of the nuage",
     )
+    swap_usage: float = Field(
+        ge=0.0,
+        le=100.0,
+        description="Current swap usage percentage of the nuage",
+    )
