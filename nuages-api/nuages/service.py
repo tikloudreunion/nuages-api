@@ -133,8 +133,8 @@ class NuageService:
         try:
             self.proxmox_session.nodes(nuage.node_name).lxc(nuage.vmid).delete(
                 destroy_unreferenced_disks=1,  # Delete unreferenced disks
-                force=1  # Force deletion without confirmation
-                purge=1  # Purge the LXC
+                force=1,  # Force deletion without confirmation
+                purge=1,  # Purge the LXC
             )  # type: ignore
         except Exception as execption:
             raise HTTPException(

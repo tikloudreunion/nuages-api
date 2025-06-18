@@ -46,6 +46,7 @@ def get_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service
     """Get a specific nuage by its UUID."""
     return service.get_nuage(nuage_uuid)
 
+
 @router.put(
     "/{nuage_uuid}/start",
     response_model=NuageResponse,
@@ -105,6 +106,7 @@ def get_nuage_status(
 def delete_nuage(nuage_uuid: str, service: NuageService = Depends(get_nuage_service)):
     """Delete a specific nuage by its UUID."""
     service.delete_nuage(nuage_uuid)
+
 
 @router.put(
     "/{nuage_uuid}/shutdown",

@@ -50,8 +50,9 @@ class NuageRepository:
         self.database_session.delete(nuage)
         self.database_session.commit()
 
-
-    def get_last_vmid_by_node_name(self, node_name: str, default_vmid: int = 100) -> int:
+    def get_last_vmid_by_node_name(
+        self, node_name: str, default_vmid: int = 100
+    ) -> int:
         """Get the last VMID for a specific node name."""
         last_vmid = self.database_session.exec(
             select(Nuage.vmid)

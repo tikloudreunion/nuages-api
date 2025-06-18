@@ -8,9 +8,7 @@ load_dotenv()
 
 application = Application()
 
-origins = [
-    "*"
-]
+origins = ["*"]
 
 application.include_router(nuages_router, prefix="/nuages", tags=["nuages"])
 application.add_middleware(

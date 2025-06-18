@@ -30,8 +30,10 @@ class NuageResponse(NuageBase):
 
     uuid: str
 
+
 class NuageStatus(BaseModel):
     """Model for the Nuage current status."""
+
     status: str = Field(
         ...,
         description="Current status of the nuage, can be 'running', 'stopped', or 'error'",

@@ -3,6 +3,7 @@ from time import time
 
 from sqlmodel import SQLModel, Field
 
+
 class Nuage(SQLModel, table=True):
     """Database model for Nuage resources."""
 
@@ -40,4 +41,3 @@ class Nuage(SQLModel, table=True):
         default_factory=time,
         description="Timestamp when the nuage was last updated",
     )
-
