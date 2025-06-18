@@ -31,3 +31,29 @@ class NuageResponse(NuageBase):
     """Schema for nuage responses."""
 
     uuid: str
+
+class NuageStatus(BaseModel):
+    """Model for the Nuage current status."""
+    status: str = Field(
+        ...,
+        description="Current status of the nuage, can be 'running', 'stopped', or 'error'",
+        pattern=r"^(running|stopped|error)$",
+    )
+    message: str = Field(
+        description="Additional message about the current status",
+    )
+    cpu_usage: float = Field(
+        ge=0.0,
+        le=100.0,
+        description="Current CPU usage percentage of the nuage",
+    )
+    memory_usage: float = Field(
+        ge=0.0,
+        le=100.0,
+        description="Current memory usage percentage of the nuage",
+    )
+    disk_usage: float = Field(
+        ge=0.0,
+        le=100.0,
+        description="Current disk usage percentage of the nuage",
+    )

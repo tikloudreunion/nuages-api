@@ -2,7 +2,6 @@ from uuid import uuid4
 
 from sqlmodel import SQLModel, Field
 
-
 class Nuage(SQLModel, table=True):
     """Database model for Nuage resources."""
 
