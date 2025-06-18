@@ -172,3 +172,14 @@ class NuageService:
             )
         return nuage
 
+    def shutdown_nuage(self, nuage_uuid: str) -> Nuage:
+        """Shutdown a nuage."""
+        nuage = self.get_nuage(nuage_uuid)
+        try:
+            self.proxmox_session.nodes(nuage.node_name).lxc(nuage.vmid).status.shutdown.create()  # type: ignore
+        except Exception as execption:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=f"Failed to shutdown LXC in Proxmox: {str(execption)}",
+            )
+        return nuage
