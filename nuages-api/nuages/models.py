@@ -21,7 +21,6 @@ class Nuage(SQLModel, table=True):
         description="Name of the Proxmox node where the nuage is hosted",
     )
     vmid: int = Field(
-        unique=True,
         index=True,
         description="Virtual Machine ID for the nuage, must be unique",
         ge=100,
