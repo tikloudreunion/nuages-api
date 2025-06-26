@@ -8,10 +8,10 @@ name: Docker
   pull_request:
     branches:
       - main
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
+permissions:
+  contents: read
+  packages: write
+  id-token: write
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: '${{ github.repository }}'
@@ -50,14 +50,14 @@ jobs:
         uses: docker/build-push-action@v6.18.0
         with:
           context: .
-          push: '${{ github.event_name != ''pull_request'' }}'
+          push: "${{ github.event_name != 'pull_request' }}"
           tags: '${{ steps.meta.outputs.tags }}'
           labels: '${{ steps.meta.outputs.labels }}'
           cache-from: type=gha
           cache-to: 'type=gha,mode=max'
           platforms: 'linux/amd64,linux/arm64'
       - name: Sign the published Docker image
-        if: '${{ github.event_name != ''pull_request'' }}'
+        if: "${{ github.event_name != 'pull_request' }}"
         env:
           TAGS: '${{ steps.meta.outputs.tags }}'
           DIGEST: '${{ steps.build-and-push.outputs.digest }}'
